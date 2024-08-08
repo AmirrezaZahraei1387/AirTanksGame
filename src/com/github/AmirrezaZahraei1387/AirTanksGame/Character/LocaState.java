@@ -6,17 +6,16 @@ import com.github.AmirrezaZahraei1387.AirTanksGame.Anim.AnimationExecutor;
 import java.awt.Point;
 import javax.swing.JComponent;
 import java.awt.Rectangle;
-import org.ietf.jgss.Oid;
 
 public abstract class LocaState extends JComponent {
     private int currentHealth;
-    private int gunDamage;
+    private int bulletId;
 
     private int speed;
 
-    protected LocaState(int currentHealth, int gunDamage, int speed){
+    protected LocaState(int currentHealth, int bulletId, int speed){
         this.currentHealth = currentHealth;
-        this.gunDamage = gunDamage;
+        this.bulletId = bulletId;
         this.speed = speed;
     }
 
@@ -30,8 +29,8 @@ public abstract class LocaState extends JComponent {
         return currentHealth;
     }
 
-    public int getGunDamage(){
-        return gunDamage;
+    public int getBulletId(){
+        return bulletId;
     }
 
     public int getSpeed(){
@@ -42,8 +41,8 @@ public abstract class LocaState extends JComponent {
         currentHealth = health;
     }
 
-    public void setGunDamage(int gunDamage){
-        this.gunDamage = gunDamage;
+    public void setBulletId(int bulletId){
+        this.bulletId = bulletId;
     }
 
     public void setSpeed(int speed){
