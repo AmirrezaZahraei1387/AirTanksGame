@@ -17,7 +17,7 @@ public class UserAirTank extends AirTankBase implements KeyListener{
 
         super(hull_img, weapon_img, currentHealth, gunDamage, speed);
         setPos(pos);
-        this.windowSize = windowSize;
+        this.windowSize = new Dimension(windowSize);
         this.margin = margin;
     }
 

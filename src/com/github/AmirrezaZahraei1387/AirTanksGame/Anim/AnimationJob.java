@@ -16,7 +16,7 @@ class AnimationJob {
 
     public AnimationJob(int id, Point point){
         this.id = id;
-        this.point = point;
+        this.point = new Point(point);
     }
 
     public int getId(){
