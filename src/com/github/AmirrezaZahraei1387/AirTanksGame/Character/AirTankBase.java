@@ -58,7 +58,9 @@ class AirTankBase extends LocaState{
         setWeaponLoc();
     }
 
-    protected void moveT(PosMoves move, int speed, boolean isForward){
+    protected void moveT(PosMoves move, boolean isForward){
+
+        int speed = getSpeed();
         if(!isForward) speed *= -1;
 
         switch (move){
@@ -69,6 +71,23 @@ class AirTankBase extends LocaState{
         }
 
         setWeaponLoc();
+    }
+
+    protected Point predictMove(PosMoves move, boolean isForward){
+
+        int speed = getSpeed();
+        if(!isForward) speed *= -1;
+
+        Point currPos = new Point(hull_loc);
+
+        switch (move){
+            case UP -> currPos.y -= speed;
+            case DOWN -> currPos.y += speed;
+            case LEFT -> currPos.x -= speed;
+            case RIGHT -> currPos.x += speed;
+        }
+
+        return currPos;
     }
 
     private void setWeaponLoc(){

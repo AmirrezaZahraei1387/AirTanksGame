@@ -23,7 +23,9 @@ public class BulletExecutor extends JComponent {
     private final Timer timer;
 
     private final Map<Integer, Bullet> bullets;
-    private ArrayList<BulletJob> jobs;
+    private final ArrayList<BulletJob> jobs;
+
+    private final int marginHit;
 
     {
         jobs = new ArrayList<>();
@@ -31,11 +33,13 @@ public class BulletExecutor extends JComponent {
 
     public BulletExecutor(Map<Integer, Bullet> bullets,
                           ArrayList<LocaState> enemies,
-                          LocaState player, Dimension dimension){
+                          LocaState player, Dimension dimension, int marginHit){
         this.bullets = bullets;
         this.enemies = enemies;
         this.player = player;
         this.windowSize = new Dimension(dimension);
+
+        this.marginHit = marginHit;
 
         this.timer = new Timer(5, new ActionListener() {
             @Override
@@ -47,7 +51,7 @@ public class BulletExecutor extends JComponent {
 
     public void shoot(int id, Point startPoint, boolean isForward){
         synchronized (jobs) {
-            jobs.add(new BulletJob(id, startPoint, isForward, bullets.get(id)));
+            jobs.add(new BulletJob(startPoint, isForward, bullets.get(id)));
         }
     }
 
@@ -57,32 +61,40 @@ public class BulletExecutor extends JComponent {
             for(int i = 0; i < jobs.size(); ++i){
 
                 BulletJob currJob = jobs.get(i);
-                Bullet bullet = bullets.get(currJob.getId());
 
-                currJob.draw(g2d, bullet);
+                currJob.draw(g2d);
 
                 if(currJob.isForward()) { // the bullet in going from player towards the enemies
                     int index = (int) Math.ceil((double) (enemies.size() * currJob.getPoint().x) / windowSize.width) - 1;
 
                     LocaState enemy = enemies.get(index);
 
-                    if (currJob.doesHit(enemy.getHullBound())) {
-                        enemy.decHealth(bullet.bulletDamage);
+                    if(enemy.isDead())
+                        continue;
+
+                    if (currJob.doesHit(enemy.getHullBound(), marginHit)) {
+                        System.out.println(enemy.getHealth());
+                        enemy.decHealth(currJob.getBullet().bulletDamage);
                         jobs.remove(i);
                     }
 
                 }else{ // a bullet has been shot from enemy to the player
 
-                    if(currJob.doesHit(player.getHullBound())){
-                        player.decHealth(bullet.bulletDamage);
+                    if(currJob.doesHit(player.getHullBound(), marginHit)){
+                        player.decHealth(currJob.getBullet().bulletDamage);
                         jobs.remove(i);
                     }
                 }
 
-                if(currJob.isFinished(bullet))
+                if(currJob.isFinished())
                     jobs.remove(i);
             }
         }
+    }
+
+    @Override
+    public Dimension getPreferredSize(){
+        return windowSize;
     }
 
     public void start(){

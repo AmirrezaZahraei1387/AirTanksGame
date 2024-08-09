@@ -29,7 +29,7 @@ public class ResourceLoader {
     /*
     scale the img to fit into the standard.
      */
-    static public BufferedImage scaleImage(BufferedImage img, Dimension standard){
+    static private BufferedImage scaleImage(BufferedImage img, Dimension standard){
 
         double scale = getFitScale(img.getWidth(), img.getHeight(), standard);
 
@@ -38,6 +38,16 @@ public class ResourceLoader {
                 AffineTransformOp.TYPE_BILINEAR);
 
         return scaler.filter(img, null);
+    }
+
+    static private BufferedImage rotateImage(BufferedImage img, double angle){
+        AffineTransformOp rotator = new AffineTransformOp(
+                AffineTransform.getRotateInstance(
+                        Math.toRadians(angle),
+                        (double) img.getWidth() / 2,
+                        (double) img.getHeight() / 2),
+                AffineTransformOp.TYPE_BILINEAR);
+        return rotator.filter(img, null);
     }
 
     static public BufferedImage loadImage(String path, Dimension standard) throws IOException {
@@ -50,12 +60,31 @@ public class ResourceLoader {
         return bufferedImage;
     }
 
+    static public BufferedImage loadImage(String path, Dimension standard, Double angle) throws IOException {
+        BufferedImage bufferedImage = loadImage(path, standard);
+
+        if(angle != null)
+            bufferedImage = rotateImage(bufferedImage, angle);
+
+        return bufferedImage;
+    }
+
     static public BufferedImage[] loadAll(String[] paths, Dimension standard) throws IOException {
 
         BufferedImage[] images = new BufferedImage[paths.length];
 
         for(int i = 0; i < paths.length; ++i)
             images[i] = loadImage(paths[i], standard);
+
+        return images;
+    }
+
+    static public BufferedImage[] loadAll(String[] paths, Dimension standard, Double angle) throws IOException {
+
+        BufferedImage[] images = new BufferedImage[paths.length];
+
+        for(int i = 0; i < paths.length; ++i)
+            images[i] = loadImage(paths[i], standard, angle);
 
         return images;
     }

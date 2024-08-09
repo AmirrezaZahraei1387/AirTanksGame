@@ -10,8 +10,8 @@ import java.awt.image.BufferedImage;
 
 public class UserAirTank extends AirTankBase implements KeyListener{
 
-    private int margin;
-    private Dimension windowSize;
+    private final int margin;
+    private final Dimension windowSize;
 
     private BulletExecutor bulletExecutor;
 
@@ -25,22 +25,30 @@ public class UserAirTank extends AirTankBase implements KeyListener{
         this.margin = margin;
     }
 
-    private boolean moveT(PosMoves move, int speed){
-        if(!isInBound())
+    private boolean moveT(PosMoves move){
+        if(!isInBound(predictMove(move, true)))
             return false;
-        super.moveT(move, speed, true);
+        super.moveT(move, true);
+        repaint(1);
         return true;
     }
 
-    private boolean isInBound(){
-        Point currentPos = getHullLoc();
-        return currentPos.x >= margin && currentPos.x <= windowSize.width - margin
+    private boolean isInBound(Point currentPos){
+
+        return currentPos.x >= margin &&
+                currentPos.x <= windowSize.width - margin - getHullBound().width
                 &&
-               currentPos.y >= margin && currentPos.y <= windowSize.height - margin;
+               currentPos.y >= margin &&
+                currentPos.y <= windowSize.height - margin - getHullBound().height;
     }
 
     public void setBulletExecutor(BulletExecutor executor){
         this.bulletExecutor = executor;
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return windowSize;
     }
 
     @Override
@@ -51,16 +59,16 @@ public class UserAirTank extends AirTankBase implements KeyListener{
 
         switch (e.getKeyChar()){
             case 'w':
-                moveT(PosMoves.UP, super.getSpeed());
+                moveT(PosMoves.UP);
                 break;
             case 's':
-                moveT(PosMoves.DOWN, super.getSpeed());
+                moveT(PosMoves.DOWN);
                 break;
             case 'a':
-                moveT(PosMoves.LEFT, super.getSpeed());
+                moveT(PosMoves.LEFT);
                 break;
             case 'd':
-                moveT(PosMoves.RIGHT, super.getSpeed());
+                moveT(PosMoves.RIGHT);
                 break;
             case ' ':
                 Rectangle weapon = getWeaponBound();
