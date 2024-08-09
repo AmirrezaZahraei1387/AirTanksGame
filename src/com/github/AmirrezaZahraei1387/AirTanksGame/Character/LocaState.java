@@ -54,9 +54,4 @@ public abstract class LocaState extends JComponent {
     public boolean isDead(){
         return currentHealth <= 0;
     }
-
-    public void destroy(AnimationExecutor executor){
-        // playing the destroy animation
-        executor.addAnim(AnimContracts.DESTROY, getHullLoc());
-    }
 }

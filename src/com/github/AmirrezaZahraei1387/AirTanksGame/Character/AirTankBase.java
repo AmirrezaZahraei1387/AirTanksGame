@@ -13,8 +13,8 @@ class AirTankBase extends LocaState{
     private Point weapon_loc;
 
     protected AirTankBase(BufferedImage hull_img, BufferedImage weapon_img,
-                          int currentHealth, int gunDamage, int speed) {
-        super(currentHealth, gunDamage, speed);
+                          int currentHealth, int bulletId, int speed) {
+        super(currentHealth, bulletId, speed);
 
         this.hull_img = hull_img;
         this.weapon_img = weapon_img;

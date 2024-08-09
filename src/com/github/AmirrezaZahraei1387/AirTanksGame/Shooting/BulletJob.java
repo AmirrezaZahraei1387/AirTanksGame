@@ -22,22 +22,26 @@ class BulletJob {
         return id;
     }
 
+    public Point getPoint(){return point;}
+
     public boolean doesHit(Rectangle rect1){
         return (point.x > rect1.x && point.x < rect1.x + rect1.width
                 &&
                 point.y > rect1.y && point.y < rect1.y + rect1.height);
     }
 
-    public boolean draw(Graphics g2d, Bullet bullet){
-        if(!isFinished(bullet)){
+    public void draw(Graphics g2d, Bullet bullet){
+        if(!isFinished(bullet)) {
             g2d.drawImage(bullet.bullet_img, point.x, point.y, null);
             point.y += speed_prefix * bullet.speed;
-            return true;
-        }else
-            return false;
+        }
     }
 
     public boolean isFinished(Bullet bullet){
         return Math.abs(point.y - startPoint.y) > bullet.distance;
+    }
+
+    public boolean isForward(){
+        return speed_prefix == 1;
     }
 }

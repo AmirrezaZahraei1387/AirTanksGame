@@ -23,10 +23,8 @@ class AnimationJob {
         return id;
     }
 
-    public boolean draw(Graphics g2d, Animation anim){
-
+    public void draw(Graphics g2d, Animation anim){
         if(!isFinished(anim)){
-
             long currentTime = System.currentTimeMillis();
 
             if(currentTime - prevTime <= anim.getTimePerFrame()){
@@ -35,10 +33,7 @@ class AnimationJob {
                 ++currentFrame;
                 prevTime = currentTime;
             }
-
-            return true;
         }
-        return false;
     }
 
     public boolean isFinished(Animation anim){
