@@ -1,0 +1,33 @@
+package com.github.AmirrezaZahraei1387.AirTanksGame.Character;
+
+import com.github.AmirrezaZahraei1387.AirTanksGame.Shooting.Bullet;
+
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
+
+class EnemyAirTank extends AirTankBase{
+
+    public EnemyAirTank(BufferedImage hull_img, BufferedImage weapon_img,
+                        Point pos, Dimension windowSize, int currentHealth,
+                        Bullet bullet, int speed) {
+        super(windowSize, hull_img, weapon_img, currentHealth, bullet, speed);
+        super.setPos(pos);
+    }
+
+    public boolean moveT(Dimension windowSize){
+        Point hullLoc = new Point(super.getHullLoc());
+
+        if(hullLoc.y < windowSize.height){
+            super.moveT(PosMoves.UP, false);
+            repaint(1);
+            return true;
+        }
+
+        // we are out of bounds and we kill this tank automatically
+        this.kill();
+        return false;
+    }
+
+
+}

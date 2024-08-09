@@ -7,9 +7,9 @@ public class Animation {
     private final long timePerFrame; // the time to wait in milliseconds for each image
 
 
-    public Animation(BufferedImage[] images, long timePerFrame) {
+    public Animation(BufferedImage[] images, long totalTime) {
         this.images = images;
-        this.timePerFrame = timePerFrame;
+        this.timePerFrame = totalTime / images.length;
     }
 
     public int size(){

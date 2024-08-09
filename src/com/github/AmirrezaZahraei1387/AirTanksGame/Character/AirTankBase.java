@@ -1,5 +1,8 @@
 package com.github.AmirrezaZahraei1387.AirTanksGame.Character;
 
+import com.github.AmirrezaZahraei1387.AirTanksGame.Shooting.Bullet;
+
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -9,18 +12,21 @@ class AirTankBase extends LocaState{
     private final BufferedImage hull_img;
     private final BufferedImage weapon_img;
 
+    private final Dimension size;
     private Point hull_loc;
     private Point weapon_loc;
 
-    protected AirTankBase(BufferedImage hull_img, BufferedImage weapon_img,
-                          int currentHealth, int bulletId, int speed) {
-        super(currentHealth, bulletId, speed);
+    protected AirTankBase(Dimension size,
+                          BufferedImage hull_img, BufferedImage weapon_img,
+                          int currentHealth, Bullet bullet, int speed) {
+        super(currentHealth, bullet, speed);
 
         this.hull_img = hull_img;
         this.weapon_img = weapon_img;
 
         hull_loc = new Point();
         weapon_loc = new Point();
+        this.size = size;
     }
 
     @Override
@@ -73,25 +79,18 @@ class AirTankBase extends LocaState{
         setWeaponLoc();
     }
 
-    protected Point predictMove(PosMoves move, boolean isForward){
-
-        int speed = getSpeed();
-        if(!isForward) speed *= -1;
-
-        Point currPos = new Point(hull_loc);
-
-        switch (move){
-            case UP -> currPos.y -= speed;
-            case DOWN -> currPos.y += speed;
-            case LEFT -> currPos.x -= speed;
-            case RIGHT -> currPos.x += speed;
-        }
-
-        return currPos;
-    }
-
     private void setWeaponLoc(){
         weapon_loc.x = hull_loc.x + hull_img.getWidth() / 2 - weapon_img.getWidth() / 2;
         weapon_loc.y = hull_loc.y + hull_img.getHeight() / 2 - weapon_img.getHeight() / 2;
+    }
+
+    @Override
+    public Dimension getPreferredSize(){
+        return size;
+    }
+
+    @Override
+    public Dimension getMinimumSize(){
+        return size;
     }
 }

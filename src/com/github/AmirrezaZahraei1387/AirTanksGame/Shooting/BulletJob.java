@@ -24,19 +24,19 @@ class BulletJob {
 
     public Point getPoint(){return point;}
 
-    public boolean doesHit(Rectangle rect1, int margin){
+    public boolean doesHit(Rectangle rect1, int margin_side, int margin_topbottom){
 
-        return (point.x >= rect1.x + margin &&
-                    point.x <= rect1.x + rect1.width - margin
+        return (point.x >= rect1.x + margin_side &&
+                    point.x <= rect1.x + rect1.width - margin_side
                 &&
-                point.y >= rect1.y + margin &&
-                    point.y <= rect1.y + rect1.height - margin)
+                point.y >= rect1.y + margin_topbottom &&
+                    point.y <= rect1.y + rect1.height - margin_topbottom)
                 ||
-                (point.x + bullet.bullet_img.getWidth() >= rect1.x + margin &&
-                        point.x + bullet.bullet_img.getWidth() <= rect1.x + rect1.width - margin
+                (point.x + bullet.bullet_img.getWidth() >= rect1.x + margin_side &&
+                        point.x + bullet.bullet_img.getWidth() <= rect1.x + rect1.width - margin_side
                         &&
-                 point.y + bullet.bullet_img.getHeight() >= rect1.y + margin &&
-                        point.y + bullet.bullet_img.getHeight() <= rect1.y + rect1.height - margin);
+                 point.y + bullet.bullet_img.getHeight() >= rect1.y + margin_topbottom &&
+                        point.y + bullet.bullet_img.getHeight() <= rect1.y + rect1.height - margin_topbottom);
     }
 
     public void draw(Graphics g2d){

@@ -1,7 +1,6 @@
 package com.github.AmirrezaZahraei1387.AirTanksGame.Character;
 
-import com.github.AmirrezaZahraei1387.AirTanksGame.Anim.AnimContracts;
-import com.github.AmirrezaZahraei1387.AirTanksGame.Anim.AnimationExecutor;
+import com.github.AmirrezaZahraei1387.AirTanksGame.Shooting.Bullet;
 
 import java.awt.Point;
 import javax.swing.JComponent;
@@ -9,14 +8,21 @@ import java.awt.Rectangle;
 
 public abstract class LocaState extends JComponent {
     private int currentHealth;
-    private int bulletId;
+    private Bullet bullet;
 
     private int speed;
 
-    protected LocaState(int currentHealth, int bulletId, int speed){
+    private long prevTimeShoot;
+
+    protected LocaState(int currentHealth, Bullet bullet, int speed){
         this.currentHealth = currentHealth;
-        this.bulletId = bulletId;
+        this.bullet = bullet;
         this.speed = speed;
+        this.prevTimeShoot = 0;
+    }
+
+    protected void kill(){
+        currentHealth = 0;
     }
 
     public abstract Rectangle getHullBound();
@@ -25,28 +31,12 @@ public abstract class LocaState extends JComponent {
     public abstract Point getHullLoc();
     public abstract Point getWeaponLoc();
 
-    public int getHealth(){
-        return currentHealth;
-    }
-
-    public int getBulletId(){
-        return bulletId;
+    public Bullet getBullet(){
+        return bullet;
     }
 
     public int getSpeed(){
         return speed;
-    }
-
-    public void setHealth(int health){
-        currentHealth = health;
-    }
-
-    public void setBulletId(int bulletId){
-        this.bulletId = bulletId;
-    }
-
-    public void setSpeed(int speed){
-        this.speed = speed;
     }
 
     public void decHealth(int damage){currentHealth -= damage;}
@@ -54,4 +44,16 @@ public abstract class LocaState extends JComponent {
     public boolean isDead(){
         return currentHealth <= 0;
     }
+
+    public boolean canShoot(){
+
+        long currentTime = System.currentTimeMillis();
+
+        if(System.currentTimeMillis() - prevTimeShoot > bullet.shootEvery) {
+            prevTimeShoot = currentTime;
+            return true;
+        }else{
+            return false;
+        }
+    };
 }

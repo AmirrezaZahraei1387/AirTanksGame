@@ -3,6 +3,7 @@ package com.github.AmirrezaZahraei1387.AirTanksGame.Anim;
 import javax.swing.Timer;
 import javax.swing.JComponent;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -15,8 +16,9 @@ public class AnimationExecutor extends JComponent{
     private final Map<Integer, Animation> animations;
     private ArrayList<AnimationJob> jobs;
     private final Timer timer;
+    private final Dimension windowSize;
 
-    public AnimationExecutor(Map<Integer, Animation> animations){
+    public AnimationExecutor(Map<Integer, Animation> animations, Dimension windowSize){
         this.timer = new Timer(5, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -24,6 +26,7 @@ public class AnimationExecutor extends JComponent{
             }
         });
 
+        this.windowSize = windowSize;
         this.animations = animations;
         this.jobs = new ArrayList<>();
     }
@@ -45,6 +48,11 @@ public class AnimationExecutor extends JComponent{
                     jobs.remove(i);
             }
         }
+    }
+
+    @Override
+    public Dimension getPreferredSize(){
+        return windowSize;
     }
 
     public void start(){

@@ -1,6 +1,8 @@
 package com.github.AmirrezaZahraei1387.AirTanksGame.Shooting;
 
 
+import com.github.AmirrezaZahraei1387.AirTanksGame.Anim.AnimContracts;
+import com.github.AmirrezaZahraei1387.AirTanksGame.Anim.AnimationExecutor;
 import com.github.AmirrezaZahraei1387.AirTanksGame.Character.LocaState;
 
 import java.awt.Dimension;
@@ -22,24 +24,26 @@ public class BulletExecutor extends JComponent {
 
     private final Timer timer;
 
-    private final Map<Integer, Bullet> bullets;
     private final ArrayList<BulletJob> jobs;
 
-    private final int marginHit;
+    private final int marginHit_side;
+    private final int marginHit_topBottom;
 
+    private final AnimationExecutor animationExecutor;
     {
         jobs = new ArrayList<>();
     }
 
-    public BulletExecutor(Map<Integer, Bullet> bullets,
-                          ArrayList<LocaState> enemies,
-                          LocaState player, Dimension dimension, int marginHit){
-        this.bullets = bullets;
+    public BulletExecutor(ArrayList<LocaState> enemies,
+                          LocaState player, AnimationExecutor executor, Dimension dimension,
+                          int marginHit_side, int marginHit_topBottom){
         this.enemies = enemies;
         this.player = player;
         this.windowSize = new Dimension(dimension);
 
-        this.marginHit = marginHit;
+        this.marginHit_side = marginHit_side;
+        this.marginHit_topBottom = marginHit_topBottom;
+        this.animationExecutor = executor;
 
         this.timer = new Timer(5, new ActionListener() {
             @Override
@@ -49,9 +53,12 @@ public class BulletExecutor extends JComponent {
         });
     }
 
-    public void shoot(int id, Point startPoint, boolean isForward){
+    public void shoot(Bullet bullet, Point startPoint,
+                      boolean isForward, LocaState player){
         synchronized (jobs) {
-            jobs.add(new BulletJob(startPoint, isForward, bullets.get(id)));
+            if(player.canShoot()) {
+                jobs.add(new BulletJob(startPoint, isForward, bullet));
+            }
         }
     }
 
@@ -69,25 +76,40 @@ public class BulletExecutor extends JComponent {
 
                     LocaState enemy = enemies.get(index);
 
-                    if(enemy.isDead())
-                        continue;
-
-                    if (currJob.doesHit(enemy.getHullBound(), marginHit)) {
-                        System.out.println(enemy.getHealth());
+                    if (!enemy.isDead() &&currJob.doesHit(
+                            enemy.getHullBound(),
+                            marginHit_side,
+                            marginHit_topBottom)) {
                         enemy.decHealth(currJob.getBullet().bulletDamage);
                         jobs.remove(i);
+                        if(enemy.isDead()){
+                            animationExecutor.addAnim(
+                                    AnimContracts.DESTROY,
+                                    enemy.getHullLoc());
+                        }
                     }
 
                 }else{ // a bullet has been shot from enemy to the player
 
-                    if(currJob.doesHit(player.getHullBound(), marginHit)){
+                    if(!player.isDead() && currJob.doesHit(
+                            player.getHullBound(),
+                            marginHit_side,
+                            marginHit_topBottom)){
                         player.decHealth(currJob.getBullet().bulletDamage);
                         jobs.remove(i);
+
+                        if(player.isDead()){
+                            animationExecutor.addAnim(
+                                    AnimContracts.DESTROY,
+                                    player.getHullLoc());
+                        }
+
                     }
                 }
 
                 if(currJob.isFinished())
                     jobs.remove(i);
+
             }
         }
     }
