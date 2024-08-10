@@ -109,12 +109,16 @@ public class BulletExecutor extends JComponent {
                 marginHit_topBottom)){
             player.decHealth(currJob.getBullet().bulletDamage);
             jobs.remove(i);
+
             if(player.isFinished()){
                 animationExecutor.addAnim(
                         AnimContracts.DESTROY,
+                        new Point(player.getHullLoc()));
+            }else{
+                animationExecutor.addAnim(
+                        AnimContracts.HURT,
                         player.getHullLoc());
             }
-
         }
 
     }

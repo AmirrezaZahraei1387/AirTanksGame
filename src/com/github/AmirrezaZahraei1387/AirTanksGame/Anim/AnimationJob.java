@@ -10,13 +10,13 @@ class AnimationJob {
     private long prevTime; // the previous time in milliseconds the animation was shown
 
     {
-        currentFrame = 0;
+        currentFrame = -1;
         prevTime = 0;
     }
 
     public AnimationJob(int id, Point point){
         this.id = id;
-        this.point = new Point(point);
+        this.point = point;
     }
 
     public int getId(){
@@ -24,6 +24,7 @@ class AnimationJob {
     }
 
     public void draw(Graphics g2d, Animation anim){
+
         if(!isFinished(anim)){
             long currentTime = System.currentTimeMillis();
 

@@ -113,7 +113,7 @@ public class EnemyCreator extends JComponent {
                     // running
                     for(int j = 0; j < enemies.get(i).size(); ++j){
 
-                        if(enemies.get(i).get(j).isDead()){
+                        if(enemies.get(i).get(j).isFinished()){
                             enemies.get(i).remove(j);
                             continue;
                         }
