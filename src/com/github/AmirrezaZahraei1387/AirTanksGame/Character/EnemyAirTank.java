@@ -10,11 +10,17 @@ import java.awt.image.BufferedImage;
 
 class EnemyAirTank extends AirTankBase{
 
+    public long prevRun;
+    public long prevShoot;
+
     public EnemyAirTank(BufferedImage hull_img, BufferedImage weapon_img,
                         Point pos, Dimension windowSize,
                         int currentHealth, Bullet bullet, int speed) {
         super(windowSize, hull_img, weapon_img, currentHealth, bullet, speed);
         super.setPos(pos);
+
+        this.prevRun = 0;
+        this.prevShoot = 0;
     }
 
     public boolean moveT(Dimension windowSize){
@@ -26,7 +32,7 @@ class EnemyAirTank extends AirTankBase{
         }
 
         // we are out of bounds and we kill this tank automatically
-        this.kill();
+        this.setPassed();
         return false;
     }
 

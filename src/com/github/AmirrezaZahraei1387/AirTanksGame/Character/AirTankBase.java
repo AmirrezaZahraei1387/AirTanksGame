@@ -31,7 +31,7 @@ class AirTankBase extends LocaState{
 
     @Override
     public void paintComponent(Graphics g2d){
-        if(!isDead()) {
+        if(!isFinished()) {
             g2d.drawImage(hull_img, hull_loc.x, hull_loc.y, this);
             g2d.drawImage(weapon_img, weapon_loc.x, weapon_loc.y, this);
         }

@@ -107,7 +107,7 @@ public class UserAirTank extends AirTankBase implements KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(isDead())
+        if(isFinished())
             return;
         switch (e.getKeyChar()) {
             case 'w':

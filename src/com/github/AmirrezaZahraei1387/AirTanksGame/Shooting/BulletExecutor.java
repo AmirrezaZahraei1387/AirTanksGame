@@ -12,12 +12,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
 import javax.swing.JComponent;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class BulletExecutor extends JComponent {
 
-    private ArrayList<LocaState> enemies;
+    private ArrayList<ArrayList<LocaState>> enemies;
     private LocaState player;
 
     private Dimension windowSize;
@@ -34,7 +34,7 @@ public class BulletExecutor extends JComponent {
         jobs = new ArrayList<>();
     }
 
-    public BulletExecutor(ArrayList<LocaState> enemies,
+    public BulletExecutor(ArrayList<ArrayList<LocaState>> enemies,
                           LocaState player, AnimationExecutor executor, Dimension dimension,
                           int marginHit_side, int marginHit_topBottom){
         this.enemies = enemies;
@@ -53,7 +53,7 @@ public class BulletExecutor extends JComponent {
         });
     }
 
-    public BulletExecutor(ArrayList<LocaState> enemies,
+    public BulletExecutor(ArrayList<ArrayList<LocaState>> enemies,
                           LocaState player,
                           AnimationExecutor executor,
                           Dimension dimension){
@@ -84,44 +84,39 @@ public class BulletExecutor extends JComponent {
                 if(currJob.isForward()) { // the bullet in going from player towards the enemies
                     int index = (int) Math.ceil((double) (enemies.size() * currJob.getPoint().x) / windowSize.width) - 1;
 
-                    LocaState enemy = enemies.get(index);
-
-                    if (!enemy.isDead() &&currJob.doesHit(
-                            enemy.getHullBound(),
-                            marginHit_side,
-                            marginHit_topBottom)) {
-                        enemy.decHealth(currJob.getBullet().bulletDamage);
-                        jobs.remove(i);
-                        if(enemy.isDead()){
-                            animationExecutor.addAnim(
-                                    AnimContracts.DESTROY,
-                                    enemy.getHullLoc());
-                        }
+                    for(int j = 0; j < enemies.get(index).size(); ++j){
+                        shootBullet(i, currJob, enemies.get(index).get(j));
                     }
 
                 }else{ // a bullet has been shot from enemy to the player
-
-                    if(!player.isDead() && currJob.doesHit(
-                            player.getHullBound(),
-                            marginHit_side,
-                            marginHit_topBottom)){
-                        player.decHealth(currJob.getBullet().bulletDamage);
-                        jobs.remove(i);
-
-                        if(player.isDead()){
-                            animationExecutor.addAnim(
-                                    AnimContracts.DESTROY,
-                                    player.getHullLoc());
-                        }
-
-                    }
+                    shootBullet(i, currJob, player);
                 }
 
                 if(currJob.isFinished())
-                    jobs.remove(i);
+                    try {
+                        jobs.remove(i);
+                    }catch (IndexOutOfBoundsException e){}
 
             }
         }
+    }
+
+    private void shootBullet(int i, BulletJob currJob, LocaState player){
+
+        if(!player.isFinished() && currJob.doesHit(
+                player.getHullBound(),
+                marginHit_side,
+                marginHit_topBottom)){
+            player.decHealth(currJob.getBullet().bulletDamage);
+            jobs.remove(i);
+            if(player.isFinished()){
+                animationExecutor.addAnim(
+                        AnimContracts.DESTROY,
+                        player.getHullLoc());
+            }
+
+        }
+
     }
 
     @Override
