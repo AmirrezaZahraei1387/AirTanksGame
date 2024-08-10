@@ -1,16 +1,18 @@
 package com.github.AmirrezaZahraei1387.AirTanksGame.Character;
 
 import com.github.AmirrezaZahraei1387.AirTanksGame.Shooting.Bullet;
+import com.github.AmirrezaZahraei1387.AirTanksGame.Shooting.BulletExecutor;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 class EnemyAirTank extends AirTankBase{
 
     public EnemyAirTank(BufferedImage hull_img, BufferedImage weapon_img,
-                        Point pos, Dimension windowSize, int currentHealth,
-                        Bullet bullet, int speed) {
+                        Point pos, Dimension windowSize,
+                        int currentHealth, Bullet bullet, int speed) {
         super(windowSize, hull_img, weapon_img, currentHealth, bullet, speed);
         super.setPos(pos);
     }
@@ -20,7 +22,6 @@ class EnemyAirTank extends AirTankBase{
 
         if(hullLoc.y < windowSize.height){
             super.moveT(PosMoves.UP, false);
-            repaint(1);
             return true;
         }
 
@@ -29,5 +30,15 @@ class EnemyAirTank extends AirTankBase{
         return false;
     }
 
+    public boolean shoot(BulletExecutor executor){
 
+        Rectangle weaponBound = getWeaponBound();
+
+        return executor.shoot(
+                new Point(weaponBound.x + weaponBound.width / 2,
+                          weaponBound.y),
+                false,
+                this);
+
+    }
 }

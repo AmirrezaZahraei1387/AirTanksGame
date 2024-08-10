@@ -5,9 +5,13 @@ import com.github.AmirrezaZahraei1387.AirTanksGame.Shooting.BulletExecutor;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
+import javax.swing.Timer;
 
 public class UserAirTank extends AirTankBase implements KeyListener{
 
@@ -16,6 +20,14 @@ public class UserAirTank extends AirTankBase implements KeyListener{
 
     private BulletExecutor bulletExecutor;
     private boolean shot;
+
+    private HashSet<Character> keysPressed;
+
+    {
+        keysPressed = new HashSet<>();
+    }
+
+    Timer keyPreformer;
 
     public UserAirTank(int margin, Dimension windowSize, Point pos,
                        BufferedImage hull_img, BufferedImage weapon_img,
@@ -26,6 +38,30 @@ public class UserAirTank extends AirTankBase implements KeyListener{
         this.windowSize = new Dimension(windowSize);
         this.margin = margin;
         this.shot = false;
+
+        keyPreformer = new Timer(2, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for(Character c: keysPressed){
+                    switch (c){
+                        case 'w':
+                            moveT(PosMoves.UP);
+                            break;
+                        case 's':
+                            moveT(PosMoves.DOWN);
+                            break;
+                        case 'a':
+                            moveT(PosMoves.LEFT);
+                            break;
+                        case 'd':
+                            moveT(PosMoves.RIGHT);
+                            break;
+                    }
+                }
+            }
+        });
+
+        keyPreformer.start();
     }
 
     private Point predictMove(PosMoves move){
@@ -71,25 +107,25 @@ public class UserAirTank extends AirTankBase implements KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-
+        if(isDead())
+            return;
         switch (e.getKeyChar()) {
             case 'w':
-                moveT(PosMoves.UP);
+                keysPressed.add('w');
                 break;
             case 's':
-                moveT(PosMoves.DOWN);
+                keysPressed.add('s');
                 break;
             case 'a':
-                moveT(PosMoves.LEFT);
+                keysPressed.add('a');
                 break;
             case 'd':
-                moveT(PosMoves.RIGHT);
+                keysPressed.add('d');
                 break;
             case ' ':
                 if (!shot) {
                     Rectangle weapon = getWeaponBound();
                     bulletExecutor.shoot(
-                            getBullet(),
                             new Point(weapon.x + weapon.width / 2, weapon.y),
                             true, this);
                     shot = true;
@@ -97,12 +133,12 @@ public class UserAirTank extends AirTankBase implements KeyListener{
 
                 break;
         }
-
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         if(e.getKeyChar() == ' ')
             shot = false;
+        keysPressed.remove(e.getKeyChar());
     }
 }

@@ -53,12 +53,22 @@ public class BulletExecutor extends JComponent {
         });
     }
 
-    public void shoot(Bullet bullet, Point startPoint,
-                      boolean isForward, LocaState player){
+    public BulletExecutor(ArrayList<LocaState> enemies,
+                          LocaState player,
+                          AnimationExecutor executor,
+                          Dimension dimension){
+        this(enemies, player, executor, dimension, 0, 0);
+    }
+
+    public boolean shoot(Point startPoint,
+                      boolean isForward,
+                      LocaState player){
         synchronized (jobs) {
             if(player.canShoot()) {
-                jobs.add(new BulletJob(startPoint, isForward, bullet));
+                jobs.add(new BulletJob(startPoint, isForward, player.getBullet()));
+                return true;
             }
+            return false;
         }
     }
 
