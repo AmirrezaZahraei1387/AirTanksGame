@@ -1,7 +1,10 @@
 package com.github.AmirrezaZahraei1387.AirTanksGame.Character;
 
-import com.github.AmirrezaZahraei1387.AirTanksGame.Shooting.Bullet;
-import com.github.AmirrezaZahraei1387.AirTanksGame.Shooting.BulletExecutor;
+import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.Bullet;
+import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.BulletExecutor;
+import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.HitDetection;
+import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.HitDetector;
+
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -22,6 +25,7 @@ public class UserAirTank extends AirTankBase implements KeyListener{
     private boolean shot;
 
     private HashSet<Character> keysPressed;
+    private HitDetection hitDetection;
 
     {
         keysPressed = new HashSet<>();
@@ -84,8 +88,15 @@ public class UserAirTank extends AirTankBase implements KeyListener{
         if(!isInBound(predictMove(move)))
             return false;
         super.moveT(move, true);
-        repaint(1);
-        return true;
+
+        if(!hitDetection.isMoveOkF(getHullBound()))
+            super.rollbackMoveT(move, true);
+        else {
+            repaint(1);
+            return true;
+        }
+
+        return false;
     }
 
     private boolean isInBound(Point currentPos){
@@ -101,6 +112,9 @@ public class UserAirTank extends AirTankBase implements KeyListener{
         this.bulletExecutor = executor;
     }
 
+    public void setHitDetection(HitDetection hitDetection){
+        this.hitDetection = hitDetection;
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {}

@@ -1,8 +1,9 @@
 package com.github.AmirrezaZahraei1387.AirTanksGame.Character;
 
 
-import com.github.AmirrezaZahraei1387.AirTanksGame.Shooting.Bullet;
-import com.github.AmirrezaZahraei1387.AirTanksGame.Shooting.BulletExecutor;
+import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.Bullet;
+import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.BulletExecutor;
+import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.HitDetection;
 
 import javax.swing.JComponent;
 import java.awt.Dimension;
@@ -49,6 +50,7 @@ public class EnemyCreator extends JComponent {
     private final int MIN_TIME_ADD;
 
     private BulletExecutor bulletExecutor;
+    private HitDetection hitDetection;
 
     public EnemyCreator(Dimension windowSize, int maxWidth, int maxHeight,
                         int margin,
@@ -134,7 +136,7 @@ public class EnemyCreator extends JComponent {
                                 );
 
                             if (distance > MARGIN_BETWEEN_TANKS || distance == -1)
-                                enemies.get(i).get(j).moveT(windowSize);
+                                enemies.get(i).get(j).moveT(windowSize, hitDetection);
                         }
                     }
 
@@ -197,6 +199,10 @@ public class EnemyCreator extends JComponent {
 
     public void serBulletExecutor(BulletExecutor executor){
         this.bulletExecutor = executor;
+    }
+
+    public void setHitDetection(HitDetection hitDetection){
+        this.hitDetection = hitDetection;
     }
 
     @Override

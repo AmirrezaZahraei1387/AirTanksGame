@@ -1,6 +1,6 @@
 package com.github.AmirrezaZahraei1387.AirTanksGame.Character;
 
-import com.github.AmirrezaZahraei1387.AirTanksGame.Shooting.Bullet;
+import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.Bullet;
 
 import java.awt.Point;
 import javax.swing.JComponent;

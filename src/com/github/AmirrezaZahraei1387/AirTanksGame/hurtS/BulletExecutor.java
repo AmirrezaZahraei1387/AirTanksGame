@@ -1,4 +1,4 @@
-package com.github.AmirrezaZahraei1387.AirTanksGame.Shooting;
+package com.github.AmirrezaZahraei1387.AirTanksGame.hurtS;
 
 
 import com.github.AmirrezaZahraei1387.AirTanksGame.Anim.AnimContracts;
@@ -8,19 +8,16 @@ import com.github.AmirrezaZahraei1387.AirTanksGame.Character.LocaState;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.Timer;
 import javax.swing.JComponent;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 public class BulletExecutor extends JComponent {
 
-    private ArrayList<ArrayList<LocaState>> enemies;
-    private LocaState player;
+    private final ArrayList<ArrayList<LocaState>> enemies;
+    private final LocaState player;
 
-    private Dimension windowSize;
+    private final Dimension windowSize;
 
     private final Timer timer;
 
@@ -45,12 +42,9 @@ public class BulletExecutor extends JComponent {
         this.marginHit_topBottom = marginHit_topBottom;
         this.animationExecutor = executor;
 
-        this.timer = new Timer(5, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                repaint(1);
-            }
-        });
+        this.timer = new Timer(5, e ->
+                repaint(1)
+        );
     }
 
     public BulletExecutor(ArrayList<ArrayList<LocaState>> enemies,
@@ -95,7 +89,7 @@ public class BulletExecutor extends JComponent {
                 if(currJob.isFinished())
                     try {
                         jobs.remove(i);
-                    }catch (IndexOutOfBoundsException e){}
+                    }catch (IndexOutOfBoundsException ignored){}
 
             }
         }
@@ -110,7 +104,7 @@ public class BulletExecutor extends JComponent {
             player.decHealth(currJob.getBullet().bulletDamage);
             jobs.remove(i);
 
-            if(player.isFinished()){
+            if(player.isDead()){
                 animationExecutor.addAnim(
                         AnimContracts.DESTROY,
                         new Point(player.getHullLoc()));

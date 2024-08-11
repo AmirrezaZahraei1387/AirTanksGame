@@ -1,7 +1,8 @@
 package com.github.AmirrezaZahraei1387.AirTanksGame.Character;
 
-import com.github.AmirrezaZahraei1387.AirTanksGame.Shooting.Bullet;
-import com.github.AmirrezaZahraei1387.AirTanksGame.Shooting.BulletExecutor;
+import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.Bullet;
+import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.BulletExecutor;
+import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.HitDetection;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -23,17 +24,26 @@ class EnemyAirTank extends AirTankBase{
         this.prevShoot = 0;
     }
 
-    public boolean moveT(Dimension windowSize){
+    public boolean moveT(Dimension windowSize, HitDetection hitDetection){
         Point hullLoc = new Point(super.getHullLoc());
 
         if(hullLoc.y < windowSize.height){
-            super.moveT(PosMoves.UP, false);
-            return true;
-        }
 
-        // we are out of bounds and we kill this tank automatically
-        this.setPassed();
-        return false;
+            super.moveT(PosMoves.UP, false);
+
+            if(!hitDetection.isMoveOkA(getHullBound())) {
+                System.out.println("fffff");
+                super.rollbackMoveT(PosMoves.UP, false);
+                return false;
+            }
+
+            return true;
+
+        }else {
+            // we are out of bounds and we kill this tank automatically
+            this.setPassed();
+            return false;
+        }
     }
 
     public boolean shoot(BulletExecutor executor){

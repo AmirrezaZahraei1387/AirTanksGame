@@ -1,6 +1,7 @@
 package com.github.AmirrezaZahraei1387.AirTanksGame.Character;
 
-import com.github.AmirrezaZahraei1387.AirTanksGame.Shooting.Bullet;
+import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.Bullet;
+import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.HitDetection;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -65,7 +66,6 @@ class AirTankBase extends LocaState{
     }
 
     protected void moveT(PosMoves move, boolean isForward){
-
         int speed = getSpeed();
         if(!isForward) speed *= -1;
 
@@ -74,6 +74,19 @@ class AirTankBase extends LocaState{
             case DOWN -> hull_loc.y += speed;
             case LEFT -> hull_loc.x -= speed;
             case RIGHT -> hull_loc.x += speed;
+        }
+        setWeaponLoc();
+    }
+
+    protected void rollbackMoveT(PosMoves move, boolean isForward){
+        int speed = getSpeed();
+        if(!isForward) speed *= -1;
+
+        switch (move){
+            case UP -> hull_loc.y += speed;
+            case DOWN -> hull_loc.y -= speed;
+            case LEFT -> hull_loc.x += speed;
+            case RIGHT -> hull_loc.x -= speed;
         }
 
         setWeaponLoc();

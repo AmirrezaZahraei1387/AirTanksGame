@@ -1,4 +1,4 @@
-package com.github.AmirrezaZahraei1387.AirTanksGame.Shooting;
+package com.github.AmirrezaZahraei1387.AirTanksGame.hurtS;
 
 import java.awt.Graphics;
 import java.awt.Point;
@@ -7,8 +7,8 @@ import java.awt.Rectangle;
 class BulletJob {
     private final Bullet bullet;
     private final Point startPoint;
-    private Point point;
-    private int speed_prefix;
+    private final Point point;
+    private final int speed_prefix;
 
     public BulletJob(Point startPoint, boolean isForward, Bullet bullet){
         this.bullet = bullet;

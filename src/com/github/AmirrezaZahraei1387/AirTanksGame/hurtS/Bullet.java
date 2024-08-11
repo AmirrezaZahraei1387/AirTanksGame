@@ -1,4 +1,4 @@
-package com.github.AmirrezaZahraei1387.AirTanksGame.Shooting;
+package com.github.AmirrezaZahraei1387.AirTanksGame.hurtS;
 
 import java.awt.image.BufferedImage;
 
@@ -7,7 +7,7 @@ public class Bullet {
     public final int bulletDamage;
     public final int speed;
     public final int distance;
-    public final int shootEvery;
+    public final long shootEvery;
 
     public Bullet(BufferedImage bullet_img, int bulletDamage, int speed, int distance, int shootEvery){
         this.bullet_img = bullet_img;
@@ -16,5 +16,4 @@ public class Bullet {
         this.distance = distance;
         this.shootEvery = shootEvery;
     }
-
 }
