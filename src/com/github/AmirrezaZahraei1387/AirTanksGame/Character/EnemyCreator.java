@@ -25,6 +25,7 @@ public class EnemyCreator extends JComponent implements CreatorStatus {
     private int enemyCount;
 
     private final ArrayList<ArrayList<EnemyAirTank>> enemies;
+    private final LocaState player;
 
     private final Dimension windowSize;
     private final int maxWidth;
@@ -59,7 +60,7 @@ public class EnemyCreator extends JComponent implements CreatorStatus {
     private int killed;
 
     public EnemyCreator(Dimension windowSize, int maxWidth, int maxHeight,
-                        int margin,
+                        int margin, LocaState player,
                         BufferedImage[] hulls, BufferedImage[] weapons,
                         Bullet[] bullets,
                         int MAX_HEALTH, int MIN_HEALTH,
@@ -80,6 +81,7 @@ public class EnemyCreator extends JComponent implements CreatorStatus {
         this.MIN_HEALTH = MIN_HEALTH;
         this.MAX_SPEED = MAX_SPEED;
         this.MIN_SPEED = MIN_SPEED;
+        this.player = player;
 
         this.MAX_TIME_RUN = MAX_TIME_RUN;
         this.MIN_TIME_RUN = MIN_TIME_RUN;
@@ -100,6 +102,7 @@ public class EnemyCreator extends JComponent implements CreatorStatus {
         this.actualEnemyWidth = maxWidth + 2 * margin;
 
         enemies = new ArrayList<>(length / actualEnemyWidth);
+
 
         for(int i = 0; i < length / actualEnemyWidth; ++i){
             enemies.add(new ArrayList<>());
@@ -175,8 +178,10 @@ public class EnemyCreator extends JComponent implements CreatorStatus {
 
                         if (canPut(i) && rand.nextBoolean()) {
                             EnemyAirTank enemyAirTank = createRandomEnemy(i);
-                            enemies.get(i).addLast(enemyAirTank);
-                            --enemyCount;
+                            if(!enemyAirTank.getHullBound().intersects(player.getHullBound())) {
+                                enemies.get(i).addLast(enemyAirTank);
+                                --enemyCount;
+                            }
                         }
                     }
                 }
