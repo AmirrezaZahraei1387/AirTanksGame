@@ -24,7 +24,7 @@ public class UserAirTank extends AirTankBase implements KeyListener{
     private BulletExecutor bulletExecutor;
     private boolean shot;
 
-    private HashSet<Character> keysPressed;
+    private HashSet<Integer> keysPressed;
     private HitDetection hitDetection;
 
     {
@@ -46,18 +46,18 @@ public class UserAirTank extends AirTankBase implements KeyListener{
         keyPreformer = new Timer(2, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for(Character c: keysPressed){
+                for(Integer c: keysPressed){
                     switch (c){
-                        case 'w':
+                        case KeyEvent.VK_W:
                             moveT(PosMoves.UP);
                             break;
-                        case 's':
+                        case KeyEvent.VK_S:
                             moveT(PosMoves.DOWN);
                             break;
-                        case 'a':
+                        case KeyEvent.VK_A:
                             moveT(PosMoves.LEFT);
                             break;
-                        case 'd':
+                        case KeyEvent.VK_D:
                             moveT(PosMoves.RIGHT);
                             break;
                     }
@@ -119,22 +119,26 @@ public class UserAirTank extends AirTankBase implements KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
+
+        System.out.println(isFinished());
+
         if(isFinished())
             return;
-        switch (e.getKeyChar()) {
-            case 'w':
-                keysPressed.add('w');
+
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W:
+                keysPressed.add(KeyEvent.VK_W);
                 break;
-            case 's':
-                keysPressed.add('s');
+            case KeyEvent.VK_S:
+                keysPressed.add(KeyEvent.VK_S);
                 break;
-            case 'a':
-                keysPressed.add('a');
+            case KeyEvent.VK_A:
+                keysPressed.add(KeyEvent.VK_A);
                 break;
-            case 'd':
-                keysPressed.add('d');
+            case KeyEvent.VK_D:
+                keysPressed.add(KeyEvent.VK_D);
                 break;
-            case ' ':
+            case KeyEvent.VK_SPACE:
                 if (!shot) {
                     Rectangle weapon = getWeaponBound();
                     bulletExecutor.shoot(
@@ -149,9 +153,9 @@ public class UserAirTank extends AirTankBase implements KeyListener{
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if(e.getKeyChar() == ' ')
+        if(e.getKeyCode() == KeyEvent.VK_SPACE)
             shot = false;
-        keysPressed.remove(e.getKeyChar());
+        keysPressed.remove(e.getKeyCode());
     }
 
     public void start(){

@@ -79,7 +79,7 @@ public class Game {
     private final static long MAX_SHOOT_EVERY_PLAYER = 130;
     private final static long MIN_SHOOT_EVERY_PLAYER = 100;
 
-    private final static int MAX_ENEMY_NUMBER = 50;
+    private final static int MAX_ENEMY_NUMBER = 40;
     private final static int MIN_ENEMY_NUMBER = 30;
 
     // game components
