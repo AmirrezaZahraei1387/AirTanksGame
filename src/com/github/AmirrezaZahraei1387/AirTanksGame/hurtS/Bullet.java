@@ -9,7 +9,7 @@ public class Bullet {
     public final int distance;
     public final long shootEvery;
 
-    public Bullet(BufferedImage bullet_img, int bulletDamage, int speed, int distance, int shootEvery){
+    public Bullet(BufferedImage bullet_img, int bulletDamage, int speed, int distance, long shootEvery){
         this.bullet_img = bullet_img;
         this.bulletDamage = bulletDamage;
         this.speed = speed;

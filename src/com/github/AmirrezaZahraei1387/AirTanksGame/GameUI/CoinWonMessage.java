@@ -17,7 +17,7 @@ public class CoinWonMessage {
     public CoinWonMessage(ImageIcon icon, Font font, Dimension windowSize) {
         label = new JLabel(icon, JLabel.CENTER);
         label.setFont(font);
-        label.setForeground(Color.BLACK);
+        label.setForeground(Color.WHITE);
         label.setIcon(icon);
         label.setHorizontalAlignment(SwingConstants.LEFT);
         label.setHorizontalTextPosition(SwingConstants.LEFT);

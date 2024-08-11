@@ -4,6 +4,7 @@ import com.github.AmirrezaZahraei1387.AirTanksGame.Character.LocaState;
 
 import javax.swing.JComponent;
 import javax.swing.Timer;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -22,9 +23,10 @@ public class HealthBar extends JComponent{
 
     private final RoundRectangle2D bar_back;
     private RoundRectangle2D bar_front;
+    private RoundRectangle2D full_transparent;
 
-    private static final Color BAR_BACK_COLOR = new Color(0f, 0f, 0f, 0.20f);
-    private static final Color BAR_FRONT_COLOR = new Color(30/255f, 241/255f, 30/255f, 0.28f);
+    private static final Color BAR_BACK_COLOR = new Color(248/255f, 136/255f, 104/255f, 0.98f);
+    private static final Color BAR_FRONT_COLOR = new Color(255, 255, 255);
 
     public HealthBar(Dimension windowSize, LocaState player,
                      int init_heath, int length, int margin){
@@ -41,6 +43,15 @@ public class HealthBar extends JComponent{
         );
 
         bar_front = new RoundRectangle2D.Double(
+                (double) (windowSize.width - length) / 2 + 5,
+                windowSize.height - margin - 25,
+                length - 10,
+                20,
+                5,
+                5
+        );
+
+        full_transparent = new RoundRectangle2D.Double(
                 (double) (windowSize.width - length) / 2 + 5,
                 windowSize.height - margin - 25,
                 length - 10,
@@ -66,7 +77,16 @@ public class HealthBar extends JComponent{
                             5,
                             5
                     );
-
+                    repaint(1);
+                }else{
+                    bar_front = new RoundRectangle2D.Double(
+                            (double) (windowSize.width - length) / 2 + 5,
+                            windowSize.height - margin - 25,
+                            0,
+                            20,
+                            5,
+                            5
+                    );
                     repaint(1);
                 }
             }
@@ -81,6 +101,10 @@ public class HealthBar extends JComponent{
 
         g2d.setColor(BAR_BACK_COLOR);
         g2d.fill(bar_back);
+
+        g2d.setColor(new Color(0,0,0));
+        g2d.setStroke(new BasicStroke(3));
+        g2d.draw(full_transparent);
 
         g2d.setColor(BAR_FRONT_COLOR);
         g2d.fill(bar_front);

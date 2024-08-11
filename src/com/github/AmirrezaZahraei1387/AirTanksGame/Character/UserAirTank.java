@@ -64,8 +64,6 @@ public class UserAirTank extends AirTankBase implements KeyListener{
                 }
             }
         });
-
-        keyPreformer.start();
     }
 
     private Point predictMove(PosMoves move){
@@ -154,5 +152,13 @@ public class UserAirTank extends AirTankBase implements KeyListener{
         if(e.getKeyChar() == ' ')
             shot = false;
         keysPressed.remove(e.getKeyChar());
+    }
+
+    public void start(){
+        keyPreformer.start();
+    }
+
+    public void stop(){
+        keyPreformer.stop();
     }
 }

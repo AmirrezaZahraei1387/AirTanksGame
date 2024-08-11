@@ -6,7 +6,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Rectangle;
@@ -17,7 +16,7 @@ public class MoneyShower{
 
     private final JLabel label;
 
-    private static final Color TEXT_COLOR = Color.BLACK;
+    private static final Color TEXT_COLOR = Color.WHITE;
 
     private final Timer timer;
 
