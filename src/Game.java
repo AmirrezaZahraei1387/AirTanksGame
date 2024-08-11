@@ -52,8 +52,8 @@ public class Game {
     private final static  int MAX_ENEMY_HEALTH = 11;
     private final static int MIN_ENEMY_HEALTH = 7;
 
-    private final static int MAX_PLAYER_HEALTH = 30;
-    private final static int MIN_PLAYER_HEALTH = 25;
+    private final static int MAX_PLAYER_HEALTH = 35;
+    private final static int MIN_PLAYER_HEALTH = 30;
 
     private final static int MAX_PLAYER_SPEED = 8;
     private final static int MIN_PLAYER_SPEED = 7;
@@ -61,8 +61,8 @@ public class Game {
     private final static int MAX_ENEMY_SPEED = 6;
     private final static int MIN_ENEMY_SPEED = 5;
 
-    private final static int MAX_BULLET_SPEED_ENEMY = 6;
-    private final static int MIN_BULLET_SPEED_ENEMY = 5;
+    private final static int MAX_BULLET_SPEED_ENEMY = 3;
+    private final static int MIN_BULLET_SPEED_ENEMY = 2;
 
     private final static int MAX_BULLET_SPEED_PLAYER = 7;
     private final static int MIN_BULLET_SPEED_PLAYER = 5;

@@ -120,8 +120,6 @@ public class UserAirTank extends AirTankBase implements KeyListener{
     @Override
     public void keyPressed(KeyEvent e) {
 
-        System.out.println(isFinished());
-
         if(isFinished())
             return;
 
