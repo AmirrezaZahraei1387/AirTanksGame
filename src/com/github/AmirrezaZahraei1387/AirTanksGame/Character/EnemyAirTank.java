@@ -11,8 +11,6 @@ import java.awt.image.BufferedImage;
 
 class EnemyAirTank extends AirTankBase{
 
-    public long prevRun;
-    public long prevShoot;
 
     public EnemyAirTank(BufferedImage hull_img, BufferedImage weapon_img,
                         Point pos, Dimension windowSize,
@@ -20,8 +18,6 @@ class EnemyAirTank extends AirTankBase{
         super(windowSize, hull_img, weapon_img, currentHealth, bullet, speed);
         super.setPos(pos);
 
-        this.prevRun = 0;
-        this.prevShoot = 0;
     }
 
     public boolean moveT(Dimension windowSize, HitDetection hitDetection){
@@ -32,7 +28,6 @@ class EnemyAirTank extends AirTankBase{
             super.moveT(PosMoves.UP, false);
 
             if(!hitDetection.isMoveOkA(getHullBound())) {
-                System.out.println("fffff");
                 super.rollbackMoveT(PosMoves.UP, false);
                 return false;
             }

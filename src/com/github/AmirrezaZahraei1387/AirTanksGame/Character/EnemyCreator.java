@@ -19,14 +19,14 @@ import javax.swing.Timer;
 public class EnemyCreator extends JComponent {
 
     private final int MARGIN_BETWEEN_TANKS;
-    private final int enemyCount;
 
-    private final ArrayList<Long> enemiesAdd;
+    private final int ENEMY_COUNT;
+    private int enemyCount;
+
     private final ArrayList<ArrayList<EnemyAirTank>> enemies;
 
     private final Dimension windowSize;
     private final int maxWidth;
-    private final int maxHeight;
     private final int margin;
     private final int actualEnemyWidth;
 
@@ -42,15 +42,20 @@ public class EnemyCreator extends JComponent {
     private final int MAX_SPEED;
     private final int MIN_SPEED;
 
-    private final int MAX_TIME_SHOOT;
-    private final int MIN_TIME_SHOOT;
-    private final int MAX_TIME_RUN;
-    private final int MIN_TIME_RUN;
-    private final int MAX_TIME_ADD;
-    private final int MIN_TIME_ADD;
 
     private BulletExecutor bulletExecutor;
     private HitDetection hitDetection;
+
+    private final long MIN_TIME_RUN;
+    private final long MAX_TIME_RUN;
+
+    private final long MIN_TIME_SHOOT;
+    private final long MAX_TIME_SHOOT;
+
+    private int activeRowNum = 0;
+
+    private int passed;
+    private int killed;
 
     public EnemyCreator(Dimension windowSize, int maxWidth, int maxHeight,
                         int margin,
@@ -58,14 +63,14 @@ public class EnemyCreator extends JComponent {
                         Bullet[] bullets,
                         int MAX_HEALTH, int MIN_HEALTH,
                         int MAX_SPEED, int MIN_SPEED,
-                        int MAX_TIME_SHOOT, int MIN_TIME_SHOOT,
-                        int MAX_TIME_RUN, int MIN_TIME_RUN,
-                        int MAX_TIME_ADD, int MIN_TIME_ADD,
-                        int enemyCount){
+                        int enemy_number,
+                        int max_row_active,
+                        int max_col_active,
+                        long MIN_TIME_SHOOT, long MAX_TIME_SHOOT,
+                        long MIN_TIME_RUN, long MAX_TIME_RUN){
 
         this.windowSize = windowSize;
         this.maxWidth = maxWidth;
-        this.maxHeight = maxHeight;
         this.margin = margin;
         this.hulls = hulls;
         this.weapons = weapons;
@@ -75,16 +80,17 @@ public class EnemyCreator extends JComponent {
         this.MAX_SPEED = MAX_SPEED;
         this.MIN_SPEED = MIN_SPEED;
 
-        this.MAX_TIME_SHOOT = MAX_TIME_SHOOT;
-        this.MIN_TIME_SHOOT = MIN_TIME_SHOOT;
-
-        this.MAX_TIME_ADD = MAX_TIME_ADD;
-        this.MIN_TIME_ADD = MIN_TIME_ADD;
-
         this.MAX_TIME_RUN = MAX_TIME_RUN;
         this.MIN_TIME_RUN = MIN_TIME_RUN;
 
-        this.enemyCount = enemyCount;
+        this.MAX_TIME_SHOOT = MAX_TIME_SHOOT;
+        this.MIN_TIME_SHOOT = MIN_TIME_SHOOT;
+
+        this.killed = 0;
+        this.passed = 0;
+
+        this.enemyCount = enemy_number;
+        this.ENEMY_COUNT = enemy_number;
 
         this.rand = new Random();
 
@@ -98,30 +104,33 @@ public class EnemyCreator extends JComponent {
             enemies.add(new ArrayList<>());
         }
 
-        this.enemiesAdd = new ArrayList<>(enemies.size());
-
-        for(int i = 0; i < enemies.size(); ++i) {
-            this.enemiesAdd.add(0L);
-        }
-
         timer = new Timer(5, new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 for(int i = 0; i < enemies.size(); ++i) {
 
-                    // the time info of the current column of enemies
                     long currentTime = System.currentTimeMillis();
 
                     // running
                     for(int j = 0; j < enemies.get(i).size(); ++j){
 
                         if(enemies.get(i).get(j).isFinished()){
+
+                            if(enemies.get(i).get(j).isDead())
+                                ++killed;
+                            else
+                                ++passed;
+
                             enemies.get(i).remove(j);
                             continue;
                         }
 
                         if (currentTime - enemies.get(i).get(j).prevRun >=
-                                rand.nextLong(MIN_TIME_RUN, MAX_TIME_RUN + 1)) {
+                                rand.nextLong(MIN_TIME_RUN, MAX_TIME_RUN + 1)
+                                &&
+                                rand.nextBoolean()
+                        ) {
 
                             enemies.get(i).get(j).prevRun = currentTime;
 
@@ -145,19 +154,28 @@ public class EnemyCreator extends JComponent {
                     if(!enemies.get(i).isEmpty()) {
                         EnemyAirTank enemy = enemies.get(i).getFirst();
 
-                        if(currentTime - enemy.prevShoot >= rand.nextLong(MIN_TIME_SHOOT, MAX_TIME_SHOOT+1) && rand.nextBoolean()){
+                        if(currentTime - enemy.prevShoot
+                                >= rand.nextLong(MIN_TIME_SHOOT, MAX_TIME_SHOOT+1)
+                        &&
+                        rand.nextBoolean()) {
                             enemy.prevShoot = currentTime;
                             enemy.shoot(bulletExecutor);
                         }
                     }
 
                     // adding the enemies
-                    if(currentTime - enemiesAdd.get(i) >= rand.nextLong(MIN_TIME_ADD, MAX_TIME_ADD+1) && rand.nextBoolean()){
-                        enemiesAdd.set(i, currentTime);
+                    if(enemyCount > 0) {
 
-                        if(canPut(i)) {
+                        if (activeRowNum >= max_row_active)
+                            continue;
+
+                        if (enemies.get(i).size() >= max_col_active)
+                            continue;
+
+                        if (canPut(i) && rand.nextBoolean()) {
                             EnemyAirTank enemyAirTank = createRandomEnemy(i);
                             enemies.get(i).addLast(enemyAirTank);
+                            --enemyCount;
                         }
                     }
                 }
@@ -165,7 +183,7 @@ public class EnemyCreator extends JComponent {
             }
         });
 
-        MARGIN_BETWEEN_TANKS = 20 + maxHeight;
+        MARGIN_BETWEEN_TANKS = this.margin + maxHeight;
     }
 
     private EnemyAirTank createRandomEnemy(int index) {
@@ -186,13 +204,10 @@ public class EnemyCreator extends JComponent {
                 rand.nextInt(MIN_SPEED, MAX_SPEED + 1)
         );
 
-        enemy.prevShoot = System.currentTimeMillis();
-        enemy.prevRun = System.currentTimeMillis();
-
-        for(int i = 0; i < enemiesAdd.size(); ++i)
-            if(rand.nextBoolean()){
-                enemiesAdd.set(i, System.currentTimeMillis());
-            }
+        enemy.prevRun = System.currentTimeMillis() +
+                rand.nextLong(MIN_TIME_RUN, MAX_TIME_RUN + 1);
+        enemy.prevShoot = System.currentTimeMillis() +
+                rand.nextLong(MIN_TIME_SHOOT, MAX_TIME_SHOOT + 1);
 
         return enemy;
     }
@@ -207,7 +222,14 @@ public class EnemyCreator extends JComponent {
 
     @Override
     public void paintComponent(Graphics g2d){
+
+        activeRowNum = 0;
+
         for (ArrayList<EnemyAirTank> enemy : enemies) {
+
+            if(!enemy.isEmpty())
+                ++activeRowNum;
+
             for (EnemyAirTank enemyAirTank : enemy) {
                 enemyAirTank.paintComponent(g2d);
             }
@@ -238,6 +260,8 @@ public class EnemyCreator extends JComponent {
         return false;
     }
 
+
+
     @Override
     public Dimension getPreferredSize(){
         return windowSize;
@@ -246,6 +270,27 @@ public class EnemyCreator extends JComponent {
     @Override
     public Dimension getMinimumSize(){
         return windowSize;
+    }
+
+
+    public boolean isFinished(){
+        return enemyCount <= 0;
+    }
+
+    public int getKilled(){
+        return killed;
+    }
+
+    public int getPassed(){
+        return passed;
+    }
+
+    public int getWholeCount(){
+        return ENEMY_COUNT;
+    }
+
+    public int getRemains(){
+        return enemyCount;
     }
 
     public void start(){

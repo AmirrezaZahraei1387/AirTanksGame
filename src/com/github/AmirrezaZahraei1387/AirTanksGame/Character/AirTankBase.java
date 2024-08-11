@@ -13,6 +13,9 @@ class AirTankBase extends LocaState{
     private final BufferedImage hull_img;
     private final BufferedImage weapon_img;
 
+    public long prevRun = 0;
+    public long prevShoot = 0;
+
     private final Dimension size;
     private Point hull_loc;
     private Point weapon_loc;
