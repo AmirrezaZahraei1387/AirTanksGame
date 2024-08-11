@@ -3,6 +3,7 @@ package com.github.AmirrezaZahraei1387.AirTanksGame.Character;
 
 import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.Bullet;
 import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.BulletExecutor;
+import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.CreatorStatus;
 import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.HitDetection;
 
 import javax.swing.JComponent;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.Timer;
 
-public class EnemyCreator extends JComponent {
+public class EnemyCreator extends JComponent implements CreatorStatus {
 
     private final int MARGIN_BETWEEN_TANKS;
 
@@ -273,24 +274,29 @@ public class EnemyCreator extends JComponent {
     }
 
 
+    @Override
     public boolean isFinished(){
-        return enemyCount <= 0;
+        return getRemains() <= 0;
     }
 
+    @Override
     public int getKilled(){
         return killed;
     }
 
+    @Override
     public int getPassed(){
         return passed;
     }
 
+    @Override
     public int getWholeCount(){
         return ENEMY_COUNT;
     }
 
+    @Override
     public int getRemains(){
-        return enemyCount;
+        return ENEMY_COUNT - killed - passed;
     }
 
     public void start(){
