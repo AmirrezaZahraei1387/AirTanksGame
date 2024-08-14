@@ -12,6 +12,7 @@ import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.Bullet;
 import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.BulletExecutor;
 import com.github.AmirrezaZahraei1387.AirTanksGame.hurtS.HitDetector;
 
+import java.util.Objects;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.Timer;
@@ -87,20 +88,22 @@ public class Game {
     private final UserAirTank user;
     private final EnemyCreator creator;
     private final BulletExecutor bulletExecutor;
-    private final HitDetector hitDetector;
 
 
     // game UI components
-    private HealthBar healthBar;
-    private MoneyShower moneyShower;
-    private CoinWonMessage coinWonMessage;
-    private BackGround backGround;
+    private final HealthBar healthBar;
+    private final MoneyShower moneyShower;
+    private final CoinWonMessage coinWonMessage;
+    private final BackGround backGround;
 
-    private Random random = new Random();
+    private final Random random = new Random();
     private final Timer timer;
     private JFrame frame;
     private boolean finish = false;
     private long prevTime = 0;
+
+    private boolean isStarted = false;
+    private boolean isStopped = true;
 
     public Game() throws IOException {
 
@@ -185,7 +188,7 @@ public class Game {
                 20
         );
 
-        hitDetector = new HitDetector(
+        HitDetector hitDetector = new HitDetector(
                 creator.getLocaStates(),
                 user,
                 windowSize
@@ -244,6 +247,15 @@ public class Game {
                     if(System.currentTimeMillis() - prevTime >= WAIT_BEFORE_FINISH) {
                         stopAll();
                         coinWonMessage.show(moneyShower.getCoins());
+                        timer.stop();
+                    }
+                }
+
+                if(!finish) {
+                    if ((frame.getExtendedState() & JFrame.ICONIFIED) != 0 && isStarted) {
+                        stopAll();
+                    } else if (isStopped && (frame.getExtendedState() & JFrame.ICONIFIED) == 0){
+                        startAll();
                     }
                 }
             }
@@ -254,6 +266,7 @@ public class Game {
     public void launch(){
         setUpGame();
         startAll();
+        timer.start();
         frame.setVisible(true);
     }
 
@@ -290,7 +303,8 @@ public class Game {
     }
 
     private void startAll(){
-        timer.start();
+        isStarted = true;
+        isStopped = false;
         creator.start();
         user.start();
         animationExecutor.start();
@@ -300,7 +314,8 @@ public class Game {
     }
 
     private void stopAll(){
-        timer.stop();
+        isStopped = true;
+        isStarted = false;
         creator.stop();
         user.stop();
         animationExecutor.stop();
@@ -340,8 +355,8 @@ public class Game {
         File f = new File(path);
         String[] names = f.list();
 
-        for(int i = 0; i < names.length; ++i)
-            names[i] = f.getPath() + "\\" + names[i];
+        for(int i = 0; i < Objects.requireNonNull(names).length; ++i)
+            names[i] = STR."\{f.getPath()}\\\{names[i]}";
 
         return names;
     }
